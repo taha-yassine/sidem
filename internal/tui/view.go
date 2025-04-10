@@ -66,19 +66,15 @@ func (m *Model) renderFooter() string { // Pointer receiver for consistency
 	var style lipgloss.Style = m.styles.Footer // Default style
 
 	if m.showQuitPrompt {
-		content = quitPrompt
-		style = m.styles.PromptStyle
+		content = m.styles.PromptStyle.Render(quitPrompt)
 	} else if m.showReloadPrompt {
-		content = reloadPrompt
-		style = m.styles.PromptStyle
+		content = m.styles.PromptStyle.Render(reloadPrompt)
 	} else if m.statusMessage != "" {
 		// Display status message instead of help when present
 		if strings.HasPrefix(m.statusMessage, "Error:") {
-			content = m.statusMessage
-			style = m.styles.ErrorMessage
+			content = m.styles.ErrorMessage.Render(m.statusMessage)
 		} else {
-			content = m.statusMessage
-			style = m.styles.StatusMessage
+			content = m.styles.StatusMessage.Render(m.statusMessage)
 		}
 	} else {
 		content = help
