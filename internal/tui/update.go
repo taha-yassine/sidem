@@ -245,51 +245,26 @@ func (m Model) toggleSelection() (Model, bool) {
 
 	if selectedItem.isGroupHeader {
 		// --- Toggle Group Header --- //
-		newActiveState := !group.IsActive
-		if newActiveState {
-			// Activating: Restore last active index if valid, otherwise find first var
-			restoreIdx := group.LastActiveLineIdx
-			if restoreIdx < 0 || restoreIdx >= len(group.Lines) || group.Lines[restoreIdx].Type != parser.LineTypeVariable {
-				// Fallback: Find the first variable line index
-				firstValueIdx := -1
-				for i, line := range group.Lines {
-					if line.Type == parser.LineTypeVariable {
-						firstValueIdx = i
-						break
-					}
-				}
-				restoreIdx = firstValueIdx // Use fallback index
-			}
-			group.ActiveLineIdx = restoreIdx // Might be -1 if no variable lines
-		} else {
-			// Deactivating: Store current active index as last active
-			if group.ActiveLineIdx != -1 {
-				group.LastActiveLineIdx = group.ActiveLineIdx
-			}
-			group.ActiveLineIdx = -1
-		}
-		group.IsActive = newActiveState
-		return m, true // State changed
+		group.IsSelected = !group.IsSelected
 
+		return m, true // State changed
 	} else {
 		// --- Select Value Line --- //
 		if selectedItem.valueIndex < 0 || selectedItem.valueIndex >= len(group.Lines) {
 			return m, false // Invalid value index
 		}
 
-		if group.IsActive {
+		if group.IsSelected {
 			// Group is ACTIVE: Select this value if it's not already the active one
-			if group.ActiveLineIdx != selectedItem.valueIndex {
-				group.ActiveLineIdx = selectedItem.valueIndex
-				group.LastActiveLineIdx = selectedItem.valueIndex // Update last active too
-				return m, true                                    // State changed
+			if group.SelectedLineIdx != selectedItem.valueIndex {
+				group.SelectedLineIdx = selectedItem.valueIndex
+				return m, true // State changed
 			}
 		} else {
 			// Group is INACTIVE: Activate the group AND select this value
-			group.IsActive = true
-			group.ActiveLineIdx = selectedItem.valueIndex
-			group.LastActiveLineIdx = selectedItem.valueIndex // Update last active
-			return m, true                                    // State changed
+			group.IsSelected = true
+			group.SelectedLineIdx = selectedItem.valueIndex
+			return m, true // State changed
 		}
 	}
 

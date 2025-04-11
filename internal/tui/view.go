@@ -87,54 +87,60 @@ func (m *Model) renderList() string {
 
 	for i, item := range listItems {
 		pointer := "  "
-		lineStyle := m.styles.NormalLine
-		prefixIconStyle := lineStyle  // Style for checkbox/radio icon
-		valueStyle := lineStyle       // Style for value text
-		keyStyle := m.styles.KeyStyle // Base key style
+		var prefixIcon string
+		var prefixIconStyle, textStyle lipgloss.Style
 
-		if i == m.cursor {
-			pointer = m.styles.FocusedLine.Render(iconPointer)
-			lineStyle = m.styles.FocusedLine
-			prefixIconStyle = lineStyle // Focused icon takes focus style
-			valueStyle = lineStyle
-			keyStyle = keyStyle.Inherit(lineStyle) // Inherit focus fg/bg for key
-		} else {
-			// Non-focused styles
-			if item.isDisabled {
-				lineStyle = m.styles.DisabledLine
-				prefixIconStyle = lineStyle
-				valueStyle = lineStyle
-				keyStyle = keyStyle.Inherit(lineStyle)
-				if item.isEmptyValue {
-					valueStyle = m.styles.EmptyValueStyle.Faint(true)
-				}
-			} else {
-				// Active but not focused
-				lineStyle = m.styles.NormalLine
-				prefixIconStyle = lineStyle
-				valueStyle = lineStyle
-				keyStyle = keyStyle.Inherit(lineStyle)
-				if item.isEmptyValue {
-					valueStyle = m.styles.EmptyValueStyle
-				}
+		// Determine correct prefix icon
+		if item.isGroupHeader {
+			prefixIcon = iconCheckboxOff
+			if item.isSelected {
+				prefixIcon = iconCheckboxOn
 			}
+			prefixIcon += " "
+		} else {
+			prefixIcon = iconRadioOff
+			if item.isSelected {
+				prefixIcon = iconRadioOn
+			}
+			prefixIcon = fmt.Sprintf("	%s ", prefixIcon)
 		}
 
-		// Apply specific color to "on" icons if not disabled
-		if !item.isDisabled && item.isActive {
-			// If it's the checkbox/radio for an active state, color it green
-			prefixIconStyle = prefixIconStyle.Foreground(m.styles.StatusMessage.GetForeground())
+		if i == m.cursor {
+			// Focused
+			pointer = m.styles.FocusedLine.Render(iconPointer)
+			prefixIconStyle = m.styles.FocusedLine
+			textStyle = m.styles.FocusedLine
+		} else {
+			// Non-focused
+			if item.isDisabled {
+				prefixIconStyle = m.styles.DisabledLine
+				textStyle = m.styles.DisabledLine
+			} else {
+				prefixIconStyle = m.styles.SelectedIcon
+				textStyle = m.styles.NormalLine
+				if item.isEmptyValue {
+					textStyle = m.styles.EmptyValueStyle
+				}
+				if !item.isSelected {
+					textStyle = textStyle.Faint(true)
+				}
+			}
 		}
 
 		var lineContent strings.Builder
 		lineContent.WriteString(pointer)
 
+		lineContent.WriteString(prefixIconStyle.Render(prefixIcon))
 		if item.isGroupHeader {
-			lineContent.WriteString(prefixIconStyle.Render(item.prefix))
-			lineContent.WriteString(keyStyle.Render(item.key))
+			// Key
+			lineContent.WriteString(textStyle.Render(item.key))
 		} else {
-			lineContent.WriteString(prefixIconStyle.Render(item.prefix))
-			lineContent.WriteString(valueStyle.Render(item.value))
+			// Value
+			if item.isEmptyValue {
+				lineContent.WriteString(textStyle.Render(iconEmptyValue))
+			} else {
+				lineContent.WriteString(textStyle.Render(item.value))
+			}
 		}
 
 		builder.WriteString(lineContent.String())
@@ -157,8 +163,7 @@ type ListItem struct {
 	isDisabled bool
 	groupIndex int
 	valueIndex int
-	isActive   bool   // Is this the active checkbox/radio?
-	prefix     string // Checkbox/Radio prefix
+	isSelected bool
 
 	// Header specific
 	isGroupHeader bool
@@ -180,61 +185,27 @@ func (m *Model) buildListItems() []ListItem {
 		group := m.parsedData.VariableGroups[key]
 
 		// Group Header
-		checkboxMarker := iconCheckboxOff // Default icon
-		if group.IsActive {
-			checkboxMarker = iconCheckboxOn
-		}
-		headerPrefix := checkboxMarker + " " // Prefix includes marker and space
 		items = append(items, ListItem{
-			prefix:        headerPrefix,
-			key:           group.Key, // Key is separate from prefix
-			isDisabled:    false,
+			key:           group.Key,
+			isDisabled:    !group.IsSelected,
 			isGroupHeader: true,
 			groupIndex:    groupIdx,
 			valueIndex:    -1,
-			isActive:      group.IsActive, // Is the group active?
+			isSelected:    group.IsSelected, // Mirrors isDisabled
 		})
 
 		// Value Lines
 		if len(group.Lines) > 0 {
-			valuesDisabled := !group.IsActive // Values are disabled if group is inactive
-			checkedIndex := -1                // The index that should display (*)
-
-			if group.IsActive {
-				checkedIndex = group.ActiveLineIdx
-			} else {
-				// If inactive, the last active line should show (*), but disabled
-				checkedIndex = group.LastActiveLineIdx
-				// Validate LastActiveLineIdx is actually a variable in this group
-				if checkedIndex < 0 || checkedIndex >= len(group.Lines) || group.Lines[checkedIndex].Type != parser.LineTypeVariable {
-					checkedIndex = -1 // Reset if invalid
-				}
-			}
-
 			for valueIdx, line := range group.Lines {
 				if line.Type == parser.LineTypeVariable {
-					radioMarker := iconRadioOff // Default icon
-					if valueIdx == checkedIndex {
-						radioMarker = iconRadioOn // Use filled icon if this is the checked one
-					}
-					valuePrefix := fmt.Sprintf("   %s ", radioMarker) // Indent + marker + space
-
-					// Handle display for empty values
-					isEmpty := line.Value == ""
-					value := line.Value
-					if isEmpty {
-						value = iconEmptyValue
-					}
-
 					items = append(items, ListItem{
-						prefix:        valuePrefix,
-						value:         value, // Display value (or placeholder)
-						isDisabled:    valuesDisabled,
-						isEmptyValue:  isEmpty,
+						value:         line.Value,
+						isDisabled:    !group.IsSelected,
+						isEmptyValue:  line.Value == "",
 						isGroupHeader: false,
 						groupIndex:    groupIdx,
 						valueIndex:    valueIdx,
-						isActive:      group.IsActive && group.ActiveLineIdx == valueIdx, // Is this the *currently* active value?
+						isSelected:    group.SelectedLineIdx == valueIdx,
 					})
 				}
 			}

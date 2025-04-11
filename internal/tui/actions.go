@@ -120,7 +120,7 @@ func reconstructVariableLine(line *parser.Line, group *parser.VariableGroup, lin
 	originalContent := line.OriginalContent
 	hasPrefix := strings.HasPrefix(strings.TrimSpace(originalContent), "#")
 
-	shouldBeActive := group.IsActive && group.ActiveLineIdx == lineIndexInGroup
+	shouldBeActive := group.IsSelected && group.SelectedLineIdx == lineIndexInGroup
 
 	if shouldBeActive {
 		// Needs to be uncommented
@@ -131,9 +131,7 @@ func reconstructVariableLine(line *parser.Line, group *parser.VariableGroup, lin
 				prefix := originalContent[:idx]
 				suffix := originalContent[idx+1:]
 				// Remove leading space from suffix if present
-				if strings.HasPrefix(suffix, " ") {
-					suffix = suffix[1:]
-				}
+				suffix = strings.TrimPrefix(suffix, " ")
 				return prefix + suffix
 			} else {
 				// '#' wasn't found where expected? Return original.

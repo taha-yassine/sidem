@@ -57,6 +57,7 @@ type Styles struct {
 	FocusedLine     lipgloss.Style
 	DisabledLine    lipgloss.Style
 	EmptyValueStyle lipgloss.Style // Style for <empty> placeholder
+	SelectedIcon    lipgloss.Style
 	KeyStyle        lipgloss.Style // Style for variable keys
 	HeaderTitle     lipgloss.Style
 	HeaderFileInfo  lipgloss.Style
@@ -95,6 +96,8 @@ func DefaultStyles() Styles {
 		// Style for '<empty>' value placeholder
 		EmptyValueStyle: base.Foreground(draculaYellow), // Yellow for empty values
 
+		SelectedIcon: base.Foreground(draculaGreen).Bold(true),
+
 		HeaderTitle: lipgloss.NewStyle().
 			Foreground(draculaPurple).
 			Padding(0, 1).
@@ -115,6 +118,54 @@ func DefaultStyles() Styles {
 		PromptStyle:    lipgloss.NewStyle().Foreground(draculaPink).Bold(true),   // Pink for prompts
 
 		KeyStyle: base.Bold(true), // Keep Key style bold with base foreground
+	}
+}
+
+// NatureStyles creates an alternative set of styles based on natural tones.
+func NatureStyles() Styles {
+	// Nature-inspired color palette
+	var (
+		natureForeground = lipgloss.AdaptiveColor{Light: "#f4f1de", Dark: "#f4f1de"} // Cream/Off-white for text
+		burntSienna      = lipgloss.AdaptiveColor{Light: "#e07a5f", Dark: "#e07a5f"} // Reddish-brown
+		jungleGreen      = lipgloss.AdaptiveColor{Light: "#3baea0", Dark: "#3baea0"} // Medium blue-green
+		darkSeaGreen     = lipgloss.AdaptiveColor{Light: "#118a7e", Dark: "#118a7e"} // Very dark sea green
+		sage             = lipgloss.AdaptiveColor{Light: "#81b29a", Dark: "#81b29a"} // Light green-gray
+		ochre            = lipgloss.AdaptiveColor{Light: "#f2cc8f", Dark: "#f2cc8f"} // Light yellowish-brown
+		terracotta       = lipgloss.AdaptiveColor{Light: "#bc6c25", Dark: "#bc6c25"} // Orange-brown
+		coffee           = lipgloss.AdaptiveColor{Light: "#6b4f35", Dark: "#6b4f35"} // Dark brown
+	)
+
+	// Base styles using nature colors
+	base := lipgloss.NewStyle().Foreground(natureForeground)
+
+	return Styles{
+		NormalLine:      base,
+		FocusedLine:     base.Foreground(burntSienna).Bold(true),
+		DisabledLine:    base.Foreground(coffee),
+		EmptyValueStyle: base.Foreground(ochre),
+
+		SelectedIcon: base.Foreground(jungleGreen).Bold(true),
+
+		HeaderTitle: lipgloss.NewStyle().
+			Foreground(jungleGreen).
+			Padding(0, 1).
+			Bold(true),
+		HeaderFileInfo: lipgloss.NewStyle().
+			Foreground(sage).
+			Padding(0, 1),
+		Header: lipgloss.NewStyle().
+			Padding(0, 0, 1),
+
+		Footer: lipgloss.NewStyle().
+			Foreground(sage).
+			MarginTop(1),
+
+		ModifiedStatus: lipgloss.NewStyle().Foreground(terracotta).Bold(true),
+		StatusMessage:  lipgloss.NewStyle().Foreground(jungleGreen),
+		ErrorMessage:   lipgloss.NewStyle().Foreground(burntSienna).Bold(true),
+		PromptStyle:    lipgloss.NewStyle().Foreground(darkSeaGreen).Bold(true),
+
+		KeyStyle: base.Bold(true),
 	}
 }
 
