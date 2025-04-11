@@ -32,20 +32,21 @@ func (m Model) View() string {
 
 // renderHeader renders the top header bar.
 func (m *Model) renderHeader() string { // Pointer receiver for consistency
-	title := "dotenv-manager"
+	version := "v0.1.0" // TODO: Get version from build
+	title := fmt.Sprintf("dotenv-manager %s", version)
 	filePath := m.filePath
 	modifiedStatus := ""
 	if m.modified {
 		modifiedStatus = m.styles.ModifiedStatus.Render(" [MODIFIED]")
 	}
 
-	fileInfo := fmt.Sprintf("File: %s%s", filePath, modifiedStatus)
+	fileInfo := fmt.Sprintf("%s%s", filePath, modifiedStatus)
 	titleWidth := lipgloss.Width(title)
 	fileInfoWidth := lipgloss.Width(fileInfo)
 
-	spaces := max(0, m.width-titleWidth-fileInfoWidth-m.styles.Header.GetHorizontalPadding())
+	spaces := max(0, m.width-titleWidth-fileInfoWidth-m.styles.HeaderTitle.GetHorizontalPadding()-m.styles.HeaderFileInfo.GetHorizontalPadding())
 
-	headerStr := fmt.Sprintf("%s%s%s", title, strings.Repeat(" ", spaces), fileInfo)
+	headerStr := fmt.Sprintf("%s%s%s", m.styles.HeaderTitle.Render(title), strings.Repeat(" ", spaces), m.styles.HeaderFileInfo.Render(fileInfo))
 
 	return m.styles.Header.Width(m.width).Render(headerStr)
 }

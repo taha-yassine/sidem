@@ -58,6 +58,8 @@ type Styles struct {
 	DisabledLine    lipgloss.Style
 	EmptyValueStyle lipgloss.Style // Style for <empty> placeholder
 	KeyStyle        lipgloss.Style // Style for variable keys
+	HeaderTitle     lipgloss.Style
+	HeaderFileInfo  lipgloss.Style
 	Header          lipgloss.Style
 	Footer          lipgloss.Style
 	ModifiedStatus  lipgloss.Style
@@ -93,11 +95,15 @@ func DefaultStyles() Styles {
 		// Style for '<empty>' value placeholder
 		EmptyValueStyle: base.Foreground(draculaYellow), // Yellow for empty values
 
-		Header: lipgloss.NewStyle().
-			Foreground(draculaForeground). // Bright FG on Purple BG for header
-			Background(draculaPurple).
+		HeaderTitle: lipgloss.NewStyle().
+			Foreground(draculaPurple).
 			Padding(0, 1).
 			Bold(true),
+		HeaderFileInfo: lipgloss.NewStyle().
+			Foreground(draculaComment).
+			Padding(0, 1),
+		Header: lipgloss.NewStyle().
+			Padding(0, 0, 1),
 
 		Footer: lipgloss.NewStyle().
 			Foreground(draculaComment). // Comment color for footer
