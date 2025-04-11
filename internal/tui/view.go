@@ -7,6 +7,7 @@ import (
 	"dotenv-manager/internal/parser"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/x/ansi"
 )
 
 // View renders the TUI based on the model state.
@@ -131,19 +132,25 @@ func (m *Model) renderList() string {
 		lineContent.WriteString(pointer)
 
 		lineContent.WriteString(prefixIconStyle.Render(prefixIcon))
+
+		// Render key or value
+		var content string
 		if item.isGroupHeader {
-			// Key
-			lineContent.WriteString(textStyle.Render(item.key))
+			content = item.key
 		} else {
-			// Value
 			if item.isEmptyValue {
-				lineContent.WriteString(textStyle.Render(iconEmptyValue))
+				content = iconEmptyValue
 			} else {
-				lineContent.WriteString(textStyle.Render(item.value))
+				content = item.value
 			}
 		}
+		lineContent.WriteString(textStyle.Render(content))
 
-		builder.WriteString(lineContent.String())
+		// Truncate line if it's too long
+		// TODO: Implement proper wrapping
+		truncatedLine := ansi.Truncate(lineContent.String(), m.width, "…")
+
+		builder.WriteString(truncatedLine)
 		builder.WriteString("\n")
 	}
 
