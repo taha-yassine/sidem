@@ -15,22 +15,16 @@ func (m Model) View() string {
 		// If quitting, show final status message if any, then clear
 		if m.statusMessage != "" {
 			finalMsg := m.statusMessage
-			// m.statusMessage = "" // Model is copied, cannot modify here
 			return finalMsg + "\n"
 		}
 		return ""
 	}
-	// Viewport readiness check removed, handled by initialization
-	// if m.width == 0 || !m.viewport.Ready() {
 	if m.width == 0 {
 		return "Initializing..."
 	}
 
 	header := m.renderHeader()
 	footer := m.renderFooter()
-
-	// Viewport content is updated in Update loop via updateViewportContent
-	// which calls m.renderList()
 
 	// Combine header, viewport, and footer
 	return fmt.Sprintf("%s\n%s\n%s", header, m.viewport.View(), footer)
@@ -111,7 +105,7 @@ func (m *Model) renderList() string {
 				valueStyle = lineStyle
 				keyStyle = keyStyle.Inherit(lineStyle)
 				if item.isEmptyValue {
-					valueStyle = m.styles.EmptyValueStyle.Copy().Faint(true)
+					valueStyle = m.styles.EmptyValueStyle.Faint(true)
 				}
 			} else {
 				// Active but not focused
@@ -126,11 +120,9 @@ func (m *Model) renderList() string {
 		}
 
 		// Apply specific color to "on" icons if not disabled
-		if !item.isDisabled {
-			if (item.isGroupHeader && item.isActive) || (!item.isGroupHeader && item.isActive) {
-				// If it's the checkbox/radio for an active state, color it green
-				prefixIconStyle = prefixIconStyle.Copy().Foreground(m.styles.StatusMessage.GetForeground())
-			}
+		if !item.isDisabled && item.isActive {
+			// If it's the checkbox/radio for an active state, color it green
+			prefixIconStyle = prefixIconStyle.Foreground(m.styles.StatusMessage.GetForeground())
 		}
 
 		var lineContent strings.Builder
@@ -141,7 +133,7 @@ func (m *Model) renderList() string {
 			lineContent.WriteString(keyStyle.Render(item.key))
 		} else {
 			lineContent.WriteString(prefixIconStyle.Render(item.prefix))
-			lineContent.WriteString(valueStyle.Render(item.valueDisplay))
+			lineContent.WriteString(valueStyle.Render(item.value))
 		}
 
 		builder.WriteString(lineContent.String())
@@ -149,9 +141,12 @@ func (m *Model) renderList() string {
 	}
 
 	finalStr := builder.String()
+
+	// Remove the last newline
 	if len(finalStr) > 0 {
 		finalStr = finalStr[:len(finalStr)-1]
 	}
+
 	return finalStr
 }
 
@@ -161,16 +156,15 @@ type ListItem struct {
 	isDisabled bool
 	groupIndex int
 	valueIndex int
-	isActive   bool // Is this the active checkbox/radio?
+	isActive   bool   // Is this the active checkbox/radio?
+	prefix     string // Checkbox/Radio prefix
 
 	// Header specific
 	isGroupHeader bool
-	prefix        string // Checkbox
 	key           string
 
 	// Value specific
-	// prefix used here too (Radio)
-	valueDisplay string
+	value        string
 	isEmptyValue bool
 }
 
@@ -226,14 +220,14 @@ func (m *Model) buildListItems() []ListItem {
 
 					// Handle display for empty values
 					isEmpty := line.Value == ""
-					valDisplay := line.Value
+					value := line.Value
 					if isEmpty {
-						valDisplay = iconEmptyValue
+						value = iconEmptyValue
 					}
 
 					items = append(items, ListItem{
 						prefix:        valuePrefix,
-						valueDisplay:  valDisplay, // Display value (or placeholder)
+						value:         value, // Display value (or placeholder)
 						isDisabled:    valuesDisabled,
 						isEmptyValue:  isEmpty,
 						isGroupHeader: false,
@@ -246,12 +240,4 @@ func (m *Model) buildListItems() []ListItem {
 		}
 	}
 	return items
-}
-
-// Helper for max(int, int)
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
