@@ -47,9 +47,9 @@ func (m *Model) renderHeader() string { // Pointer receiver for consistency
 
 	spaces := max(0, m.width-titleWidth-fileInfoWidth-m.styles.HeaderTitle.GetHorizontalPadding()-m.styles.HeaderFileInfo.GetHorizontalPadding())
 
-	headerStr := fmt.Sprintf("%s%s%s", m.styles.HeaderTitle.Render(title), strings.Repeat(" ", spaces), m.styles.HeaderFileInfo.Render(fileInfo))
+	header := fmt.Sprintf("%s%s%s", m.styles.HeaderTitle.Render(title), strings.Repeat(" ", spaces), m.styles.HeaderFileInfo.Render(fileInfo))
 
-	return m.styles.Header.Width(m.width).Render(headerStr)
+	return m.styles.Header.Width(m.width).Render(header)
 }
 
 // renderFooter renders the bottom help/status bar.
@@ -116,14 +116,14 @@ func (m *Model) renderList() string {
 			if item.isDisabled {
 				prefixIconStyle = m.styles.DisabledLine
 				textStyle = m.styles.DisabledLine
+				if item.isEmptyValue {
+					textStyle = m.styles.EmptyValueStyle.Faint(true)
+				}
 			} else {
 				prefixIconStyle = m.styles.SelectedIcon
 				textStyle = m.styles.NormalLine
 				if item.isEmptyValue {
 					textStyle = m.styles.EmptyValueStyle
-				}
-				if !item.isSelected {
-					textStyle = textStyle.Faint(true)
 				}
 			}
 		}

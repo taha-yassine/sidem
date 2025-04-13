@@ -106,7 +106,7 @@ func DefaultStyles() Styles {
 			Foreground(draculaComment).
 			Padding(0, 1),
 		Header: lipgloss.NewStyle().
-			Padding(0, 0, 1),
+			MarginBottom(1),
 
 		Footer: lipgloss.NewStyle().
 			Foreground(draculaComment). // Comment color for footer
