@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"dotenv-manager/internal/parser"
+	"sidem/internal/parser"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/ansi"
@@ -34,7 +34,7 @@ func (m Model) View() string {
 // renderHeader renders the top header bar.
 func (m *Model) renderHeader() string { // Pointer receiver for consistency
 	version := "v0.1.0" // TODO: Get version from build
-	title := fmt.Sprintf("dotenv-manager %s", version)
+	title := fmt.Sprintf("sidem %s", version)
 	filePath := m.filePath
 	modifiedStatus := ""
 	if m.modified {

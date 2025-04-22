@@ -6,7 +6,7 @@ Set Width 1200
 Set Height 600
 
 
-Type "./dotenv-manager example.env" Sleep 500ms  Enter
+Type "./sidem example.env" Sleep 500ms  Enter
 
 Sleep 2s
 

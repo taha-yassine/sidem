@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"dotenv-manager/internal/parser"
-	"dotenv-manager/internal/watcher"
+	"sidem/internal/parser"
+	"sidem/internal/watcher"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"

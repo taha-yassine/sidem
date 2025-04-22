@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"dotenv-manager/internal/parser"
+	"sidem/internal/parser"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

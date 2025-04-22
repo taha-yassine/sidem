@@ -1,5 +1,5 @@
 {
-  description = "dotenv-manager: A CLI tool to manage .env files";
+  description = "sidem - simple dotenv manager";
 
   inputs.nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*.tar.gz";
 
@@ -22,11 +22,11 @@
 
       packages = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.buildGoModule {
-          pname = "dotenv-manager";
+          pname = "sidem";
           version = "0.1.0";
           src = ./.;
           vendorHash = "sha256-J/FgzMJzM8/1xrYKsRQ6e9T9aUbq+6PiiZrgwy6NiJA=";
-          subPackages = [ "cmd/dotenv-manager" ];
+          subPackages = [ "cmd/sidem" ];
         };
       });
 
@@ -41,6 +41,8 @@
 
             # https://github.com/golangci/golangci-lint
             golangci-lint
+
+            vhs
           ];
         };
       });

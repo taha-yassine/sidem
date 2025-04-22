@@ -5,18 +5,18 @@ import (
 	"log"
 	"os"
 
-	"dotenv-manager/internal/parser"
-	"dotenv-manager/internal/tui"
-	"dotenv-manager/internal/watcher"
+	"sidem/internal/parser"
+	"sidem/internal/tui"
+	"sidem/internal/watcher"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "dotenv-manager [dotenv-file]",
+	Use:   "sidem [dotenv-file]",
 	Short: "A TUI application to manage .env files",
-	Long: `dotenv-manager provides a terminal user interface
+	Long: `sidem provides a terminal user interface
 for viewing, editing, and managing variables within a .env file.
 
 If [dotenv-file] is not provided, it defaults to '.env' in the current directory.`,
@@ -76,7 +76,7 @@ func runApplication(cmd *cobra.Command, args []string) {
 	}
 
 	// Exit successfully
-	fmt.Println("dotenv-manager exited.")
+	fmt.Println("sidem exited.")
 }
 
 func main() {
