@@ -18,7 +18,7 @@ go install github.com/taha-yassine/sidem@latest
 ### Nix flake
 
 ```bash
-nix run github.com:taha-yassine/sidem
+nix run github:taha-yassine/sidem
 ```
 
 ### Build from source
