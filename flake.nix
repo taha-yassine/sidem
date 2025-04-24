@@ -25,7 +25,7 @@
           pname = "sidem";
           version = "0.1.0";
           src = ./.;
-          vendorHash = "sha256-J/FgzMJzM8/1xrYKsRQ6e9T9aUbq+6PiiZrgwy6NiJA=";
+          vendorHash = "sha256-urWhuiL78IA8HwQv2peiPBE5BrDhkz0UoMteuWVgBoE=";
           subPackages = [ "cmd/sidem" ];
         };
       });

@@ -54,7 +54,7 @@ func (m *Model) renderHeader() string { // Pointer receiver for consistency
 
 // renderFooter renders the bottom help/status bar.
 func (m *Model) renderFooter() string { // Pointer receiver for consistency
-	help := "↑/↓/j/k: Navigate | Space: Toggle/Select | Ctrl+S: Save | q/Ctrl+C: Quit"
+	help := "↑/↓/j/k: Navigate | Space: Toggle/Select | y: Copy | Ctrl+S: Save | q/Ctrl+C: Quit"
 	quitPrompt := "Save changes before quitting? ([Y]es/[N]o/[C]ancel)"
 	reloadPrompt := "File changed externally. [R]eload (lose TUI changes) / [K]eep TUI changes?"
 

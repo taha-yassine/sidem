@@ -8,6 +8,7 @@ import (
 	"sidem/internal/parser"
 	"sidem/internal/watcher"
 
+	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -156,6 +157,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.statusMessage = "No changes to save."
 				cmd = tea.Tick(2*time.Second, func(t time.Time) tea.Msg {
 					return clearStatusMsg{originalMsg: "No changes to save."}
+				})
+				cmds = append(cmds, cmd)
+			}
+
+		case "y": // Copy selected line content
+			textToCopy := m.getSelectedLineContent()
+			if textToCopy != "" {
+				err := clipboard.WriteAll(textToCopy)
+				if err != nil {
+					m.statusMessage = fmt.Sprintf("Error copying: %v", err)
+				} else {
+					m.statusMessage = "Copied to clipboard!"
+					cmd = tea.Tick(2*time.Second, func(t time.Time) tea.Msg {
+						return clearStatusMsg{originalMsg: "Copied to clipboard!"}
+					})
+					cmds = append(cmds, cmd)
+				}
+			} else {
+				m.statusMessage = "The selected line is empty."
+				cmd = tea.Tick(2*time.Second, func(t time.Time) tea.Msg {
+					return clearStatusMsg{originalMsg: "The selected line is empty."}
 				})
 				cmds = append(cmds, cmd)
 			}
@@ -359,3 +381,13 @@ func (m Model) reloadFileCmd() tea.Cmd {
 // Custom min/max removed, using built-in Go 1.21+ versions.
 
 // saveCmd is defined in actions.go
+
+func (m *Model) getSelectedLineContent() string {
+	listItems := m.getCurrentListItems()
+
+	selectedItem := listItems[m.cursor]
+	if selectedItem.isGroupHeader {
+		return selectedItem.key
+	}
+	return selectedItem.value
+}
