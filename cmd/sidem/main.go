@@ -68,7 +68,7 @@ func runApplication(cmd *cobra.Command, args []string) {
 	initialModel := tui.InitialModel(filePath, parsedData, w)
 
 	// 6. Create and run the Bubble Tea program
-	p := tea.NewProgram(initialModel, tea.WithAltScreen(), tea.WithMouseCellMotion()) // Enable AltScreen and mouse
+	p := tea.NewProgram(initialModel, tea.WithAltScreen()) // Enable AltScreen
 
 	if _, err := p.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error running program: %v\n", err)
