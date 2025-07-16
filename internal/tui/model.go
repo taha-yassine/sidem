@@ -3,8 +3,8 @@ package tui
 import (
 	"context"
 
-	"github.com/masamerc/sidem/internal/parser"
-	"github.com/masamerc/sidem/internal/watcher"
+	"github.com/taha-yassine/sidem/internal/parser"
+	"github.com/taha-yassine/sidem/internal/watcher"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"

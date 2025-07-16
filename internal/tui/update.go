@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/masamerc/sidem/internal/watcher"
+	"github.com/taha-yassine/sidem/internal/watcher"
 
-	"github.com/masamerc/sidem/internal/parser"
+	"github.com/taha-yassine/sidem/internal/parser"
 
 	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/bubbles/viewport"

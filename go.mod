@@ -1,4 +1,4 @@
-module github.com/masamerc/sidem
+module github.com/taha-yassine/sidem
 
 go 1.24.1
 
