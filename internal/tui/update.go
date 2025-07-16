@@ -5,8 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"sidem/internal/parser"
-	"sidem/internal/watcher"
+	"github.com/masamerc/sidem/internal/watcher"
+
+	"github.com/masamerc/sidem/internal/parser"
 
 	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -16,11 +17,13 @@ import (
 
 // --- Custom Message Types (errMsg, saveSuccessMsg defined in actions.go) ---
 
-type clearStatusMsg struct{ originalMsg string }
-type confirmedReloadMsg struct{}
-type fileReloadedMsg struct {
-	parsedData *parser.ParsedData
-}
+type (
+	clearStatusMsg     struct{ originalMsg string }
+	confirmedReloadMsg struct{}
+	fileReloadedMsg    struct {
+		parsedData *parser.ParsedData
+	}
+)
 
 // --- Update Function ---
 

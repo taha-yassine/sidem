@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"sidem/internal/parser"
+	"github.com/masamerc/sidem/internal/parser"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
