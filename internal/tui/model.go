@@ -2,8 +2,9 @@ package tui
 
 import (
 	"context"
-	"sidem/internal/parser"
-	"sidem/internal/watcher"
+
+	"github.com/taha-yassine/sidem/internal/parser"
+	"github.com/taha-yassine/sidem/internal/watcher"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"

@@ -12,7 +12,7 @@ It lets you toggle variables on or off and select from multiple predefined value
 ### Go Install
 
 ```bash
-go install github.com/taha-yassine/sidem@latest
+go install github.com/taha-yassine/sidem/cmd/sidem@latest
 ```
 
 ### Nix flake

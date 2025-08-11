@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 
-	"sidem/internal/parser"
-	"sidem/internal/tui"
-	"sidem/internal/watcher"
+	"github.com/taha-yassine/sidem/internal/parser"
+	"github.com/taha-yassine/sidem/internal/tui"
+	"github.com/taha-yassine/sidem/internal/watcher"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
